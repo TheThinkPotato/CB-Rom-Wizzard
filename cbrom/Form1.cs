@@ -138,19 +138,18 @@ namespace cbrom
 
         private void button4_Click(object sender, EventArgs e)
         {
-            
-            
-            if (listBox1.Items.Count != 0 & listBox1.Items.Count >= 0)
+
+            if (listBox1.Items.Count == 1 & openFileDialog1.FileName != "*")
             {
                 string ncpuRom = currentFolder + @"\NCPUCODE.BIN";
 
 
-                System.IO.File.Copy(currentFile, currentFolder + @"\" + newBiosFileName,true);
+                System.IO.File.Copy(currentFile, currentFolder + @"\" + newBiosFileName, true);
                 //MessageBox.Show(currentFolder + @"\microcode\" + listBox1.Items[0]);
-                System.IO.File.Copy(currentFolder + @"\microcode\" + listBox1.Items[0], ncpuRom,true);
+                System.IO.File.Copy(currentFolder + @"\microcode\" + listBox1.Items[0], ncpuRom, true);
                 var attr = File.GetAttributes(ncpuRom);
-                
-                attr = attr | FileAttributes.ReadOnly;  
+
+                attr = attr | FileAttributes.ReadOnly;
                 File.SetAttributes(ncpuRom, attr);
 
                 //ProcessStartInfo p = new ProcessStartInfo(@"Bin\CBROM32_195.exe", newBiosFileName +@" /d");
@@ -159,28 +158,36 @@ namespace cbrom
                 richTextBox3.Text += "\n\n" + RomWrite();
 
                 attr = attr & ~FileAttributes.ReadOnly;
-                File.SetAttributes(ncpuRom, attr);                             
+                File.SetAttributes(ncpuRom, attr);
 
                 richTextBox2.Text = readRom(currentFolder + @"\" + newBiosFileName);
 
                 richTextBox3.AppendText("\n\n==============================\n" + "Lines Rom1: " + richTextBox1.Lines.Count().ToString() +
                     "\nLines Rom2: " + richTextBox2.Lines.Count().ToString() + "\n==============================\n");
-                
-                                
-                
+
+
+
                 try
-                {                    
+                {
                     System.IO.File.Move(currentFolder + @"\" + newBiosFileName, newBiosFldr + @"\" + newBiosFileName, true);
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Unable to move new new bios file to destination.","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    
+                    MessageBox.Show("Unable to move new new bios file to destination.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 }
-                
+
 
                 richTextBox3.Focus();
                 richTextBox3.ScrollToCaret();
+            }
+            else if (openFileDialog1.FileName == "*")
+            { 
+                MessageBox.Show("Please open an original bios rom.","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show("Please add a microcode patch rom.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             // Make a new copy of current bios
             // copy file needed to add to biod rom (NCPUCODE.BIN)
@@ -232,13 +239,12 @@ namespace cbrom
             ProcessMicrocodeList.StartInfo.Arguments = fileName;
 
             ProcessMicrocodeList.Start();
-            ProcessMicrocodeList.StandardInput.Write(ProcessMicrocodeList.StandardInput.NewLine);
-            ProcessMicrocodeList.StandardInput.Write(ProcessMicrocodeList.StandardInput.NewLine);
-            ProcessMicrocodeList.StandardInput.Write(ProcessMicrocodeList.StandardInput.NewLine);
 
+
+            //ProcessMicrocodeList.StandardInput.WriteLine("aa");                      
+            //ProcessMicrocodeList.StandardInput.Write(ProcessMicrocodeList.StandardInput.NewLine);
 
             string output = ProcessMicrocodeList.StandardOutput.ReadToEnd();
-
 
             ProcessMicrocodeList.WaitForExit();
             ProcessMicrocodeList.Close();
@@ -250,6 +256,36 @@ namespace cbrom
         private void buttonOpen_Click(object sender, EventArgs e)
         {
             Process.Start("explorer.exe", newBiosFldr);            
+        }
+
+        private void toolStripMenuItem6_Click(object sender, EventArgs e)
+        {
+                MessageBox.Show("CB Rom wizzard has been made by the OFFbit Tech\nAKA TheThinkPotatoe.\n\nPlease use this software at your own risk. We hold no responsability if it causes you damage.\n\nVersion 1.0a", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            button1_Click(sender, e);
+        }
+
+        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            button4_Click(sender, e);
+        }
+
+        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            buttonOpen_Click(sender, e);
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void richTextBox4_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
